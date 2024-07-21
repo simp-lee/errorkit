@@ -34,7 +34,7 @@ func TestValidate(t *testing.T) {
 	}
 }
 
-func TestSafeExec(t *testing.T) {
+func TestTry(t *testing.T) {
 	tests := []struct {
 		name    string
 		fn      func() error
@@ -47,7 +47,7 @@ func TestSafeExec(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := SafeExec(tt.fn)
+			err := Try(tt.fn)
 			if tt.wantErr == "" {
 				if err != nil {
 					t.Errorf("SafeExec() error = %v, wantErr %v", err, tt.wantErr)
@@ -61,7 +61,7 @@ func TestSafeExec(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithNoResult(t *testing.T) {
+func TestTry0(t *testing.T) {
 	tests := []struct {
 		name    string
 		fn      func()
@@ -73,7 +73,7 @@ func TestSafeExecWithNoResult(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := SafeExecWithNoResult(tt.fn)
+			err := Try0(tt.fn)
 			if tt.wantErr == "" {
 				if err != nil {
 					t.Errorf("SafeExecWithNoResult() error = %v, wantErr %v", err, tt.wantErr)
@@ -87,7 +87,7 @@ func TestSafeExecWithNoResult(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithResult(t *testing.T) {
+func TestTry1(t *testing.T) {
 	tests := []struct {
 		name    string
 		fn      func() (int, error)
@@ -101,7 +101,7 @@ func TestSafeExecWithResult(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := SafeExecWithResult(tt.fn)
+			result, err := Try1(tt.fn)
 			if tt.wantErr == "" {
 				if err != nil || result != tt.want {
 					t.Errorf("SafeExecWithResult() = %v, %v, want %v, nil", result, err, tt.want)
@@ -115,7 +115,7 @@ func TestSafeExecWithResult(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithTwoResults(t *testing.T) {
+func TestTry2(t *testing.T) {
 	tests := []struct {
 		name    string
 		fn      func() (int, string, error)
@@ -130,7 +130,7 @@ func TestSafeExecWithTwoResults(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result1, result2, err := SafeExecWithTwoResults(tt.fn)
+			result1, result2, err := Try2(tt.fn)
 			if tt.wantErr == "" {
 				if err != nil || result1 != tt.want1 || result2 != tt.want2 {
 					t.Errorf("SafeExecWithTwoResults() = %v, %v, %v, want %v, %v, nil", result1, result2, err, tt.want1, tt.want2)
@@ -144,7 +144,7 @@ func TestSafeExecWithTwoResults(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithThreeResults(t *testing.T) {
+func TestTry3(t *testing.T) {
 	tests := []struct {
 		name    string
 		fn      func() (int, string, bool, error)
@@ -160,7 +160,7 @@ func TestSafeExecWithThreeResults(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result1, result2, result3, err := SafeExecWithThreeResults(tt.fn)
+			result1, result2, result3, err := Try3(tt.fn)
 			if tt.wantErr == "" {
 				if err != nil || result1 != tt.want1 || result2 != tt.want2 || result3 != tt.want3 {
 					t.Errorf("SafeExecWithThreeResults() = %v, %v, %v, %v, want %v, %v, %v, nil", result1, result2, result3, err, tt.want1, tt.want2, tt.want3)
@@ -174,7 +174,7 @@ func TestSafeExecWithThreeResults(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithHandler(t *testing.T) {
+func TestTryCatch(t *testing.T) {
 	tests := []struct {
 		name          string
 		fn            func() error
@@ -190,7 +190,7 @@ func TestSafeExecWithHandler(t *testing.T) {
 				*tt.handlerCalled = true
 			}
 
-			SafeExecWithHandler(tt.fn, handler)
+			TryCatch(tt.fn, handler)
 			if tt.fn() != nil && !*tt.handlerCalled {
 				t.Errorf("SafeExecWithHandler() handler not called")
 			}
@@ -201,7 +201,7 @@ func TestSafeExecWithHandler(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithHandler0(t *testing.T) {
+func TestTry0Catch(t *testing.T) {
 	tests := []struct {
 		name          string
 		fn            func()
@@ -217,7 +217,7 @@ func TestSafeExecWithHandler0(t *testing.T) {
 				*tt.handlerCalled = true
 			}
 
-			SafeExecWithHandler0(tt.fn, handler)
+			Try0Catch(tt.fn, handler)
 			if tt.name == "panic" && !*tt.handlerCalled {
 				t.Errorf("SafeExecWithHandler0() handler not called")
 			}
@@ -228,7 +228,7 @@ func TestSafeExecWithHandler0(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithHandlerWithResult(t *testing.T) {
+func TestTry1Catch(t *testing.T) {
 	tests := []struct {
 		name          string
 		fn            func() (int, error)
@@ -246,7 +246,7 @@ func TestSafeExecWithHandlerWithResult(t *testing.T) {
 				*tt.handlerCalled = true
 			}
 
-			result := SafeExecWithHandlerWithResult(tt.fn, handler)
+			result := Try1Catch(tt.fn, handler)
 			if tt.wantErr && !*tt.handlerCalled {
 				t.Errorf("SafeExecWithHandlerWithResult() handler not called")
 			}
@@ -260,7 +260,7 @@ func TestSafeExecWithHandlerWithResult(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithHandlerWithTwoResults(t *testing.T) {
+func TestTry2Catch(t *testing.T) {
 	tests := []struct {
 		name          string
 		fn            func() (int, string, error)
@@ -279,7 +279,7 @@ func TestSafeExecWithHandlerWithTwoResults(t *testing.T) {
 				*tt.handlerCalled = true
 			}
 
-			result1, result2 := SafeExecWithHandlerWithTwoResults(tt.fn, handler)
+			result1, result2 := Try2Catch(tt.fn, handler)
 			if tt.wantErr && !*tt.handlerCalled {
 				t.Errorf("SafeExecWithHandlerWithTwoResults() handler not called")
 			}
@@ -293,7 +293,7 @@ func TestSafeExecWithHandlerWithTwoResults(t *testing.T) {
 	}
 }
 
-func TestSafeExecWithHandlerWithThreeResults(t *testing.T) {
+func TestTry3Catch(t *testing.T) {
 	tests := []struct {
 		name          string
 		fn            func() (int, string, bool, error)
@@ -313,7 +313,7 @@ func TestSafeExecWithHandlerWithThreeResults(t *testing.T) {
 				*tt.handlerCalled = true
 			}
 
-			result1, result2, result3 := SafeExecWithHandlerWithThreeResults(tt.fn, handler)
+			result1, result2, result3 := Try3Catch(tt.fn, handler)
 			if tt.wantErr && !*tt.handlerCalled {
 				t.Errorf("SafeExecWithHandlerWithThreeResults() handler not called")
 			}

@@ -5,7 +5,7 @@
 ## Features
 
 - **Safe Execution**: Execute functions safely, catching panics and converting them into errors.
-- **Error Handling**: Handle errors with optional handler functions.
+- **Error Handling**: Handle errors with optional catch functions.
 - **Panic Recovery**: Recover from panics and handle them gracefully.
 - **Stack Traces**: Obtain stack traces for errors and panics.
 - **Generic Support**: Utilize generic types for flexible and type-safe results.
@@ -13,7 +13,7 @@
 
 ## Installation
 
-To install ErrorKit, use the following command:
+To install `errorkit`, use the following command:
 
 ```shell
 go get github.com/simp-lee/errorkit
@@ -34,12 +34,12 @@ if err != nil {
 }
 ```
 
-### SafeExec
+### Try
 
 Execute a function safely, catching any panics:
 
 ```Go
-err := errorkit.SafeExec(func() error {
+err := errorkit.Try(func() error {
 	panic("unexpected panic")
 })
 if err != nil {
@@ -47,12 +47,12 @@ if err != nil {
 }
 ```
 
-### SafeExecWithNoResult
+### Try0
 
 Execute a function with no return value safely:
 
 ```Go
-err := errorkit.SafeExecWithNoResult(func() {
+err := errorkit.Try0(func() {
 	panic("unexpected panic")
 })
 if err != nil {
@@ -60,12 +60,12 @@ if err != nil {
 }
 ```
 
-### SafeExecWithResult
+### Try1
 
 Execute a function and return a result safely:
 
 ```Go
-result, err := errorkit.SafeExecWithResult(func() (int, error) {
+result, err := errorkit.Try1(func() (int, error) {
 	return 42, nil
 })
 if err != nil {
@@ -75,12 +75,12 @@ if err != nil {
 }
 ```
 
-### SafeExecWithTwoResults
+### Try2
 
 Execute a function and return two results safely:
 
 ```go
-result1, result2, err := errorkit.SafeExecWithTwoResults(func() (int, string, error) {
+result1, result2, err := errorkit.Try2(func() (int, string, error) {
 	return 42, "hello", nil
 })
 if err != nil {
@@ -90,12 +90,12 @@ if err != nil {
 }
 ```
 
-### SafeExecWithThreeResults
+### Try3
 
 Execute a function and return three results safely:
 
 ```go
-result1, result2, result3, err := errorkit.SafeExecWithThreeResults(func() (int, string, bool, error) {
+result1, result2, result3, err := errorkit.Try3(func() (int, string, bool, error) {
 	return 42, "hello", true, nil
 })
 if err != nil {
@@ -105,24 +105,24 @@ if err != nil {
 }
 ```
 
-### SafeExecWithHandler
+### TryCatch
 
-Execute a function and call a handler if an error occurs:
+Execute a function and call a catch function if an error occurs:
 
 ```go
-errorkit.SafeExecWithHandler(func() error {
+errorkit.TryCatch(func() error {
 	return errors.New("test error")
 }, func(err error) {
 	fmt.Println(err) // Output: test error
 })
 ```
 
-### SafeExecWithHandlerWithResult
+### Try1Catch
 
-Execute a function returning a result and call a handler if an error occurs:
+Execute a function returning a result and call a catch function if an error occurs:
 
 ```go
-result := errorkit.SafeExecWithHandlerWithResult(func() (int, error) {
+result := errorkit.Try1Catch(func() (int, error) {
 	return 42, errors.New("test error")
 }, func(err error) {
 	fmt.Println(err) // Output: test error
@@ -130,12 +130,12 @@ result := errorkit.SafeExecWithHandlerWithResult(func() (int, error) {
 fmt.Println(result) // Output: 0
 ```
 
-### SafeExecWithHandlerWithTwoResults
+### Try2Catch
 
-Execute a function returning two results and call a handler if an error occurs:
+Execute a function returning two results and call a catch function if an error occurs:
 
 ```go
-result1, result2 := errorkit.SafeExecWithHandlerWithTwoResults(func() (int, string, error) {
+result1, result2 := errorkit.Try2Catch(func() (int, string, error) {
 	return 42, "hello", errors.New("test error")
 }, func(err error) {
 	fmt.Println(err) // Output: test error
@@ -143,12 +143,12 @@ result1, result2 := errorkit.SafeExecWithHandlerWithTwoResults(func() (int, stri
 fmt.Println(result1, result2) // Output: 0
 ```
 
-### SafeExecWithHandlerWithThreeResults
+### Try3Catch
 
-Execute a function returning three results and call a handler if an error occurs:
+Execute a function returning three results and call a catch function if an error occurs:
 
 ```go
-result1, result2, result3 := errorkit.SafeExecWithHandlerWithThreeResults(func() (int, string, bool, error) {
+result1, result2, result3 := errorkit.Try3Catch(func() (int, string, bool, error) {
 	return 42, "hello", true, errors.New("test error")
 }, func(err error) {
 	fmt.Println(err) // Output: test error
